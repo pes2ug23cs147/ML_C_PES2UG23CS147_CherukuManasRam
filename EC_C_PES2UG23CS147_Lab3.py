@@ -128,6 +128,9 @@ def get_selected_attribute(data: np.ndarray) -> tuple:
     # Hint: Store gains in a dictionary with attribute index as key
     # Hint: Find the attribute with maximum gain using max() with key parameter
     # Hint: Return tuple (gain_dictionary, selected_attribute_index)
+
+    if np.unique(data[:, -1]).shape[0] == 1: # Node is already pure, no need to split.
+        return ({}, -1)
     if data.shape[0] == 0 or data.shape[1] <= 1:
         return ({}, -1)
     num_attributes = data.shape[1] - 1 # Calculate the info gain for all attributes for all columns except the target variable.
