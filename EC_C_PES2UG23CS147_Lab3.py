@@ -98,10 +98,10 @@ def get_information_gain(data: np.ndarray, attribute: int) -> float:
     # Hint: Round the result to 4 decimal places
     if data.shape[0] == 0:
         return 0.0
-    dataset_entropy = get_entropy_of_dataset(data) # Entropy of the dataset before the split.
+    ds_entropy = get_entropy_of_dataset(data) # Entropy of the dataset before the split.
     avg_info = get_avg_info_of_attribute(data, attribute) # Entropy after splitting at the attribute.
-    information_gain = dataset_entropy - avg_info
-    return round(information_gain, 4)
+    info_gain = ds_entropy - avg_info
+    return round(info_gain, 4)
 
 def get_selected_attribute(data: np.ndarray) -> tuple:
     """
@@ -128,16 +128,13 @@ def get_selected_attribute(data: np.ndarray) -> tuple:
     # Hint: Store gains in a dictionary with attribute index as key
     # Hint: Find the attribute with maximum gain using max() with key parameter
     # Hint: Return tuple (gain_dictionary, selected_attribute_index)
-
     if np.unique(data[:, -1]).shape[0] == 1: # Node is already pure, no need to split.
         return ({}, -1)
     if data.shape[0] == 0 or data.shape[1] <= 1:
         return ({}, -1)
-    num_attributes = data.shape[1] - 1 # Calculate the info gain for all attributes for all columns except the target variable.
-    gain_dictionary = {}
-    for i in range(num_attributes):
-        gain_dictionary[i] = get_information_gain(data, i)
+    attr_count = data.shape[1] - 1 # Calculate the info gain for all attributes for all columns except the target variable.
+    gain_dictionary = {i: get_information_gain(data, i) for i in range(attr_count)}
     if not gain_dictionary:
         return ({}, -1)
-    selected_attribute_index = max(gain_dictionary, key=gain_dictionary.get) # Getting the attribute with the highest info gain.
-    return (gain_dictionary, selected_attribute_index) # Returning both the dictionary with the mapping of all attributes with its info gain along with the index of the attribute with the highest info gain.
+    max_index = max(gain_dictionary, key=gain_dictionary.get) # Getting the attribute with the highest info gain.
+    return (gain_dictionary, max_index) # Returning both the dictionary with the mapping of all attributes with its info gain along with the index of the attribute with the highest info gain.
